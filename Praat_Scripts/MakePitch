@@ -1,0 +1,9 @@
+for i to 114
+	i$ = string$ (i)
+	Read from file: "/Users/wesley/Desktop/wetransfer-0538dc/Example"+ i$ + ".wav";
+	appendInfoLine: i
+	selectObject: "Sound Example"+ i$;
+    To Pitch: 0.0, 75, 600
+	removeObject: "Sound Example"+ i$;
+endfor
+

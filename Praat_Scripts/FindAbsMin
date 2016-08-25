@@ -1,0 +1,36 @@
+#findMin of intensity
+#clearinfo
+for i to 2
+	selectObject: i
+	name$ = selected$ ()
+appendInfoLine: name$, " : "
+To Intensity: 75, 0, "yes"
+time = 0
+end = Get end time
+timeStep= Get time step
+mean = Get mean: 0.0, 0.0, "dB"
+min = mean
+maxTime = 0
+minTime = 0
+max = mean
+while time < end
+	value= Get value at time: time, "cubic";
+	if value = undefined
+		time = time + timeStep;
+	elsif value > max
+		max=value
+		maxTime= time
+	elsif value < min 
+		#appendInfoLine: "The time of the emphasis is ", minTime, " to ", time;
+		#appendInfoLine: "Max is ", max; 
+		min = value;
+		minTime= time
+	elsif value=min
+		min=value
+	endif	
+	time = time + timeStep;
+endwhile
+Remove
+appendInfoLine: "The minimum of ", name$, " is ", min, " dB at ", minTime, " sec"
+appendInfoLine: "The maximum of ", name$, " is ", max, " dB at ", maxTime, " sec"
+endfor

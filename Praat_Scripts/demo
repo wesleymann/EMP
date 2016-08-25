@@ -1,0 +1,5 @@
+demo Erase all
+demo Red
+demo Axes: 0, 100, 0, 100
+i = 17
+demo Text: 50, "centre", 50, "half", string$(i)

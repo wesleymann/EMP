@@ -1,0 +1,181 @@
+#findRel of Pitch
+clearinfo
+for i to 114
+	selectObject: i
+	i$ = string$ (i)
+	name$ = selected$ ()
+Erase all
+appendInfoLine: name$, " : "
+To Pitch: 0, 75, 600
+#Interpolate
+time = 0.2
+end = Get end time
+timeStep= Get time step
+mean = Get mean: 0.0, 0.0, "Hertz"
+quantile1= Get quantile: 0.0,0.0,0.95,"Hertz"
+quantile2= Get quantile: 0.0,0.0,0.2,"Hertz"
+quantile3= Get quantile: 0.0,0.0,0.005,"Hertz"
+min = mean
+maxTime = 0
+minTime = 0
+max = mean
+absMin = Get minimum: time, end, "Hertz", "Parabolic"
+absMax = Get maximum: time, end, "Hertz", "Parabolic"
+absMinTime = Get time of minimum: time, end, "Hertz", "Parabolic"
+absMaxTime = Get time of maximum: time, end, "Hertz", "Parabolic"
+threshold = Get quantile: 0.0,0.0,0.16,"Hertz"
+piTimes = undefined
+piMinTimes = undefined
+j=0
+k=0
+
+#appendInfoLine: "threshold is ", threshold
+
+while time < end
+	value= Get value at time: time, "Hertz", "Nearest"
+		if value = undefined
+			time = time + timeStep;
+		elsif value>quantile1 or value<quantile3
+			time = time + timeStep;
+		elsif max-min > threshold
+			if abs(minTime-time) > 0.05
+				j=j+1
+				k=k+1
+				repeat
+					time=time + timeStep
+					value= Get value at time: time, "Hertz", "Nearest"
+						if value = undefined
+							time = time + timeStep;
+						elsif value > max
+							max=value
+						elsif value < min 
+							min = value;
+						elsif value=min
+							min=value
+						endif
+				until value < quantile2
+				#appendInfoLine: "The time of the emphasis is ", minTime, " to ", time;
+				piMinTimes[j] = minTime
+				piTimes[k] = time
+				max = mean
+				min = mean
+			endif
+		max = mean
+		min = mean
+	elsif value > max
+		max=value
+		maxTime= time
+		#appendInfoLine: "used value > max", max
+	elsif value < min 
+		min = value;
+		minTime= time
+		#appendInfoLine: "used value < min", min
+	elsif value=min
+		min=value
+		#appendInfoLine: "used value = min"
+	endif	
+	time = time + timeStep;
+endwhile
+Remove
+
+	selectObject: i
+	i$ = string$ (i)
+	name$ = selected$ ()
+To Intensity: 75, 0, "yes"
+time = 0.2
+end = Get end time
+timeStep= Get time step
+mean = Get mean: 0.0, 0.0, "dB"
+min = mean
+maxTime = 0
+minTime = 0
+max = mean
+absMin = Get minimum: time, end, "cubic"
+absMax = Get maximum: time, end, "cubic"
+absMinTime = Get time of minimum: time, end, "cubic"
+absMaxTime = Get time of maximum: time, end, "cubic"
+threshold = abs(absMin - absMax) * (3/4)
+inTimes = undefined
+inMinTimes = undefined
+x=0
+y=0
+
+#appendInfoLine: "threshold is ", threshold
+
+while time < end
+	value= Get value at time: time, "cubic";
+		if value = undefined
+			time = time + timeStep;
+	elsif max-min > threshold
+			if abs(minTime-time) > 0.05
+				x=x+1
+				y=y+1
+				repeat
+					time=time + timeStep
+					value= Get value at time: time, "cubic";
+						if value = undefined
+							time = time + timeStep;
+						elsif value > max
+							max=value
+						elsif value < min 
+							min = value;
+						elsif value=min
+							min=value
+						endif
+				until value < mean
+				#appendInfoLine: "The time of the emphasis is ", minTime, " to ", time;
+				inMinTimes[x] = minTime
+				inTimes[y] = time
+				max = mean
+				min = mean
+			endif
+		max = mean
+		min = mean
+	elsif value > max
+		max=value
+		maxTime= time
+		#appendInfoLine: "used value > max", max
+	elsif value < min 
+		min = value;
+		minTime= time
+		#appendInfoLine: "used value < min", min
+	elsif value=min
+		min=value
+		#appendInfoLine: "used value = min"
+	endif	
+	time = time + timeStep;
+endwhile
+Remove
+#appendInfoLine: "Pitch values: "
+#for m from 1 to j
+#	appendInfoLine: piMinTimes [m], tab$, piTimes [m]
+#endfor
+
+#appendInfoLine: "Intensity values: "
+#for n from 1 to x
+#	appendInfoLine: inMinTimes [n], tab$, inTimes [n]
+#endfor
+p=0
+
+
+for m from 1 to j
+	for n from 1 to x
+		if piMinTimes[m]< inMinTimes[n] and inMinTimes[n]<piTimes[m]
+			p=p+1
+			if inTimes[n]>piTimes[m]
+				appendInfoLine: "Emphasis is ", inMinTimes[n], tab$, inTimes[n]
+			else
+				appendInfoLine: "Emphasis is ", inMinTimes[n], tab$, piTimes[m]
+			endif
+		else
+		endif
+	endfor
+endfor
+
+if p = 0 and j = 0
+	appendInfoLine: "NO EMPHASIS VALUES because of PITCH ERROR"
+elsif p = 0
+	appendInfoLine: "NO EMPHASIS VALUES"
+endif
+
+endfor

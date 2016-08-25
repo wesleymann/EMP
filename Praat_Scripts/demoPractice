@@ -1,0 +1,10 @@
+demo Erase all
+demo Select inner viewport: 0, 100, 0, 100
+demo Axes: 0, 100, 0, 100
+demo Paint rectangle: "purple", 0, 100, 0, 100
+demo Pink
+demo Text: 50, "centre", 50, "half", "This is the first page"
+demoWaitForInput ( )
+demo Erase all
+demo Paint rectangle: "purple", 0, 100, 0, 100
+demo Text: 50, "centre", 50, "half", "This is the second page"

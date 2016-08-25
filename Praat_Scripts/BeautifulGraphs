@@ -1,0 +1,25 @@
+for i to 114
+	i$ = string$ (i)
+	Read from file: "/Users/wesley/Desktop/wetransfer-0538dc/Example"+ i$ + ".wav";
+	appendInfoLine: i
+	selectObject: "Sound Example"+ i$;
+    To Pitch: 0.0, 75, 600
+		Erase all
+		Blue
+		Line width: 2.0
+		Select inner viewport: 0.5, 11.5, 0.5, 6.5
+		Draw: 0, 0, 0, 600, "no"
+		Text top: "no", "Example " + i$
+	selectObject: "Sound Example"+ i$;
+	To Intensity: 100,0,"no";
+		Green
+		Line width: 2.0
+		Select inner viewport: 0.5, 11.5, 0.5, 6.5
+		Draw: 0, 0, 20, 100, "yes"
+		One mark right: 20.0, "no", "no", "no", "0"
+		One mark right: 100.0, "no", "no", "no", "600"
+		Text right: "yes", "Pitch (Hz)"
+		Save as PDF file: "/Users/wesley/Desktop/BVC examples/Combined Pictures/Example" + i$+ ".pdf"
+	removeObject: "Sound Example"+ i$;
+endfor
+

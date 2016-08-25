@@ -1,0 +1,6 @@
+#for i from 1 to 114
+#	i$ = string$ (i)
+#	plusObject: "Sound Example"+ i$;
+#endfor
+
+select all #lol

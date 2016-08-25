@@ -1,0 +1,7 @@
+for i from 1 to 114
+	i$ = string$ (i)
+	Read from file: "/Users/wesley/Desktop/wetransfer-0538dc/Example"+ i$ + ".wav";
+	appendInfoLine: i;
+endfor
+
+select all
